@@ -57,6 +57,9 @@ class ApiDoc extends Command
      * @var string[]
      */
     protected $fun = ['index'=>'列表','store'=>'新建','show'=>'单条查看','update'=>'修改','destroy'=>'删除'];
+
+
+    protected $columns;
     /**
      * Create a new route command instance.
      *
@@ -86,8 +89,8 @@ class ApiDoc extends Command
             'path'=>config('doc.path'),
             'v'=>config('doc.v'),
         ];
+        $this->columns = $this->getDatabaseColumns();
         $httpData['apis'] =$this->getApis($routes);
-
         $this->http($httpData);
         $this->info('结束');
     }
@@ -166,8 +169,6 @@ class ApiDoc extends Command
      */
     public function getRequest($api)
     {
-        $columns = $this->getDatabaseColumns();
-
         foreach ($api->getParameters() as $value){
             if ($value->getClass()){
                 $class = $value->getClass()->getName();
@@ -178,7 +179,7 @@ class ApiDoc extends Command
                     foreach ($rules as $key=>$vv){
                         $name = $key;
                         $is_must = array_search('required',$vv) === false?'N':'Y';
-                        $desc = $columns[$key];
+                        $desc = $this->columns[$key];
                         $data[] = compact('name','is_must','desc');
                     }
                     return $data;

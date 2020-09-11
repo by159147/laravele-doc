@@ -45,6 +45,7 @@ class DocController
                 'name'=>@$param['name'],
                 'is_must'=>@$param['is_must'],
                 'desc'=>@$param['desc'],
+                'example'=>@$param['example'],
             ]);
         }
     }

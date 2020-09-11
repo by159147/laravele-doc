@@ -69,12 +69,14 @@ class DocParser {
 
         if (empty ( $this->params [$param] )) {
             $this->params [$param] = $value;
-        } else if ($param == 'param' || $param == 'q' || $param == 'b' || $param == 'u') {
+        } else if ($param == 'param' ) {
             $arr = array (
                 $this->params [$param],
                 $value
             );
             $this->params [$param] = $arr;
+        }else if($param == 'q' || $param == 'b' || $param == 'u'){
+            $this->params[$param][(@count($this->params[$param]))+1] = $value;
         } else {
             $this->params [$param] = $value + $this->params [$param];
         }
