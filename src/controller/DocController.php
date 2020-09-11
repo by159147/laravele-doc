@@ -50,7 +50,7 @@ class DocController
     public function delApiParams($id)
     {
         $ids = Api::where('project_id',$id)->pluck('id');
-        Param::whereIn('api_id',Api::where('project_id',$ids)->pluck('id'))->delete();
+        Param::whereIn('api_id',$ids)->delete();
         Api::destroy($ids);
     }
 
