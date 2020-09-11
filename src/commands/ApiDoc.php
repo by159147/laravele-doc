@@ -138,14 +138,25 @@ class ApiDoc extends Command
      */
     public function getDatabaseColumns() {
         $data = [];
+        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+
+//        $connection = Schema::connection('mysql');
+//        foreach ($connection->getAllTables() as $v){
+//            $columns = DB::getDoctrineSchemaManager()->listTableDetails($v->Tables_in_doc);
+//            $column = $connection->getColumnListing($v->Tables_in_doc);
+//            foreach ($column as $item){
+//                $data[$item] = $columns->getColumn($item)->getComment();
+//            }
+//        }
         $connection = Schema::connection('mysql');
-        foreach ($connection->getAllTables() as $v){
-            $columns = DB::getDoctrineSchemaManager()->listTableDetails($v->Tables_in_doc);
-            $column = $connection->getColumnListing($v->Tables_in_doc);
+        foreach ($tables as $table){
+            $columns = DB::getDoctrineSchemaManager()->listTableDetails($table);
+            $column = $connection->getColumnListing($table);
             foreach ($column as $item){
                 $data[$item] = $columns->getColumn($item)->getComment();
             }
         }
+
         return $data;
     }
 
