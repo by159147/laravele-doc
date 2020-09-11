@@ -21,7 +21,9 @@ class DocParser {
         return $this->params;
     }
     private function parseLines($lines) {
-        foreach ( $lines as $line ) {
+
+        foreach ( $lines as $key=>$line ) {
+
             $parsedLine = $this->parseLine ( $line ); // Parse the line
 
             if ($parsedLine === false && ! isset ( $this->params ['description'] )) {
@@ -39,6 +41,7 @@ class DocParser {
             $this->params ['long_description'] = $desc;
     }
     private function parseLine($line) {
+
         // trim the whitespace from the line
         $line = trim ( $line );
 
@@ -54,6 +57,7 @@ class DocParser {
                 $param = substr ( $line, 1 );
                 $value = '';
             }
+
             // Parse the line and return false if the parameter is valid
             if ($this->setParam ( $param, $value ))
                 return false;
@@ -62,12 +66,13 @@ class DocParser {
         return $line;
     }
     private function setParam($param, $value) {
+
         if ($param == 'param' || $param == 'return')
             $value = $this->formatParamOrReturn ( $value );
         if ($param == 'class')
             list ( $param, $value ) = $this->formatClass ( $value );
 
-        if (empty ( $this->params [$param] )) {
+        if (empty ( $this->params [$param] ) &&  $param != 'q' && $param != 'b' && $param != 'u') {
             $this->params [$param] = $value;
         } else if ($param == 'param' ) {
             $arr = array (
@@ -75,9 +80,13 @@ class DocParser {
                 $value
             );
             $this->params [$param] = $arr;
-        }else if($param == 'q' || $param == 'b' || $param == 'u'){
-            $this->params[$param][(@count($this->params[$param]))+1] = $value;
-        } else {
+        }else if ($param == 'q' || $param == 'b' || $param == 'u'){
+
+            $arr = array_key_exists($param,$this->params)?$this->params[$param]:[];
+            $arr[] = $value;
+            $this->params[$param] = $arr;
+
+        }else {
             $this->params [$param] = $value + $this->params [$param];
         }
         return true;
