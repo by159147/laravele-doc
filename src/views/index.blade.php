@@ -18,7 +18,7 @@
 <body>
 <div class="tit">
     <div id="titcont">
-        API在线文档<span class="sma"> </span>
+        项目名称:{{$project->name}}<span class="sma"></span>
     </div>
 </div>
 <div id="cont">
@@ -79,6 +79,9 @@
 暂无
         </pre>
         </div>
+        <br>
+        <br>
+        <br>
         @endforeach
 
     </div>
