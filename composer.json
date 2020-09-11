@@ -12,6 +12,11 @@
     "require": {
         "doctrine/dbal": "^2.10"
     },
+    "autoload": {
+        "psr-4": {
+            "Faed\\Doc\\": "src/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
