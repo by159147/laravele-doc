@@ -16,7 +16,7 @@
     }
 </style>
 <body>
-<div class="tit">
+<div class="tit" >
     <div id="titcont">
         项目名称:{{$project->name}}<span class="sma"></span>
     </div>
