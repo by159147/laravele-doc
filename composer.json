@@ -1,0 +1,22 @@
+{
+    "name": "faed/laravle-doc",
+    "description": "通过反射生成laravel接口文档",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "faed",
+            "email": "327399770@qq.com"
+        }
+    ],
+    "require": {
+        "doctrine/dbal": "^2.10"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Faed\\Doc\\DocServiceProvider"
+            ]
+        }
+    }
+}
