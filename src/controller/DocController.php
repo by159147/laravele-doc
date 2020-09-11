@@ -21,16 +21,18 @@ class DocController
         $project = Project::updateOrcreate($post['project']);
 
         $this->delApiParams($project->id);
-        foreach ($post['apis'] as $value){
-            $api = Api::create([
-                'project_id'=>$project->id,
-                'name'=>@$value['name'],
-                'path'=>@$value['path'],
-                'method'=>@$value['method'],
-            ]);
-            $this->setParams($api->id,@$value['q']?:[],1);
-            $this->setParams($api->id,@$value['u']?:[],2);
-            $this->setParams($api->id,@$value['b']?:[],3);
+        if (!empty($post['apis'])){
+            foreach ($post['apis'] as $value){
+                $api = Api::create([
+                    'project_id'=>$project->id,
+                    'name'=>@$value['name'],
+                    'path'=>@$value['path'],
+                    'method'=>@$value['method'],
+                ]);
+                $this->setParams($api->id,@$value['q']?:[],1);
+                $this->setParams($api->id,@$value['u']?:[],2);
+                $this->setParams($api->id,@$value['b']?:[],3);
+            }
         }
     }
 
@@ -39,10 +41,10 @@ class DocController
         foreach ($params as $param){
             Param::create([
                 'api_id'=>$apiId,
-                'type'=>$type,
-                'name'=>$param['name'],
-                'is_must'=>$param['is_must'],
-                'desc'=>$param['desc'],
+                'type'=>@$type,
+                'name'=>@$param['name'],
+                'is_must'=>@$param['is_must'],
+                'desc'=>@$param['desc'],
             ]);
         }
     }
