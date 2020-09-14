@@ -119,7 +119,12 @@ class ApiDoc extends Command
 
                 $classDoc = $this->getDoc($reflection);
 
-                $api = $reflection->getMethod($explode[1]);
+                try {
+                    $api = $reflection->getMethod($explode[1]);
+                }catch (\Exception $exception){
+                    Log::alert($exception->getMessage());
+                    return [];
+                }
 
                 $apiDoc = $this->getDoc($api);
                 return [
@@ -179,7 +184,7 @@ class ApiDoc extends Command
                     foreach ($rules as $key=>$vv){
                         $name = $key;
                         $is_must = array_search('required',$vv) === false?'N':'Y';
-                        $desc = $this->columns[$key];
+                        $desc = @$this->columns[$key];
                         $data[] = compact('name','is_must','desc');
                     }
                     return $data;
