@@ -9,4 +9,9 @@ class Group extends Model
 {
     use HasFactory;
     protected $guarded=[];
+
+    public function apis()
+    {
+        return $this->hasMany(Api::class);
+    }
 }

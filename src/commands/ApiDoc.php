@@ -97,6 +97,8 @@ class ApiDoc extends Command
 
     public function http($httpData)
     {
+        Log::alert('发送全部数据',$httpData);
+
         $client = new Client();
         try {
             $client->post(config('doc.send') . '/doc/save', [
@@ -110,9 +112,11 @@ class ApiDoc extends Command
 
     public function getApis($routes)
     {
+        $this->info('开始处理路由');
         return collect($routes)->filter(function ($route){
             return strstr($route['uri'], config('doc.only'));
         })->map(function ($route){
+            $this->info($route['uri']);
             $explode = explode('@',$route['action']);
             if (array_key_exists(1,$explode)){
                 $reflection =(new \ReflectionClass($explode[0]));
@@ -128,7 +132,8 @@ class ApiDoc extends Command
 
                 $apiDoc = $this->getDoc($api);
                 return [
-                    'name'=>$this->getApiName(@$classDoc['description'],@$apiDoc['description'],$explode[1]),
+                    'name'=>$this->getApiName(@$classDoc['group'],@$apiDoc['description'],$explode[1]),
+                    'group'=>@$classDoc['group']?:'未分配',
                     'path'=>$route['uri'],
                     'method'=>$route['method'],
                     'q'=>$this->getParam(array_key_exists('q',$apiDoc)?$apiDoc['q']:[]),

@@ -15,7 +15,7 @@ class CreateApisTable extends Migration
     {
         Schema::create('apis', function (Blueprint $table) {
             $table->id();
-            $table->integer('project_id')->comment('项目id');
+            $table->integer('group_id')->comment('项目id');
             $table->string('name')->nullable()->comment('方法名称');
             $table->string('path')->nullable()->comment('路由');
             $table->string('method')->nullable()->comment('请求方式');

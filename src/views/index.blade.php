@@ -97,7 +97,11 @@
 <!--浮动接口导航栏-->
 <div id="floatMenuLeft">
     <div>分组</div>
-    <ul class="menuLeft"></ul>
+    <ul class="menuLeft">
+        @foreach($groups as $group)
+            <li><a href="{{route('doc.index',[$project->id,$group->id])}}">{{$group['name']}}</a></li>
+        @endforeach
+    </ul>
 </div>
 
 <div id="floatMenuRight">
@@ -112,10 +116,6 @@
     $(document).ready(function(){
         $(".le > em").each(function(index, element){
             $(".menu").append(" <li><a href='#"+ $(this).text() +"'>"+ $(this).text()+"</a></li>");
-        });
-
-        $(".lineface").each(function (){
-            $('.menuLeft').append(" <li><a href='#"+ $(this).text() +"'>"+ $(this).text()+"</a></li>");
         });
 
         menuYloc = parseInt($(nameRight).css("top").substring(0,$(nameRight).css("top").indexOf("px")))
