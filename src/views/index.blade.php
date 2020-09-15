@@ -23,8 +23,7 @@
 </div>
 <div id="cont">
     <div class='fun'>
-        <div class='lineface'>一、接口总述 </div>
-        <span class="le">#.<em style="font-size: 20px">全局参数说明</em></span>
+        <span>#.<em style="font-size: 20px">全局参数说明</em></span>
         <span class='ri'></span>
         <div class='says'>
             请求地址：{{$project->path}}<br>
@@ -34,7 +33,7 @@
         </div>
     </div>
     <div class='fun'>
-        <div class='lineface'>二、相关接口</div>
+        <div class='lineface'>相关接口</div>
         @foreach($apis as $value)
         <a name="{{$value->name}}"></a>
         <span class='le'>#.<em style="font-size: 20px">{{$value->name}}</em> <b>描述:{{$value->desc}}</b></span>
@@ -96,20 +95,35 @@
 
 
 <!--浮动接口导航栏-->
-<div id="floatMenu">
+<div id="floatMenuLeft">
+    <div>分组</div>
+    <ul class="menuLeft"></ul>
+</div>
+
+<div id="floatMenuRight">
+    <div>详细</div>
     <ul class="menu"></ul>
 </div>
+
 <script language="javascript">
-    var name = "#floatMenu";
+    var nameRight = "#floatMenuRight";
+    var nameLeft = "#floatMenuLeft";
     var menuYloc = null;
     $(document).ready(function(){
         $(".le > em").each(function(index, element){
             $(".menu").append(" <li><a href='#"+ $(this).text() +"'>"+ $(this).text()+"</a></li>");
         });
-        menuYloc = parseInt($(name).css("top").substring(0,$(name).css("top").indexOf("px")))
+
+        $(".lineface").each(function (){
+            $('.menuLeft').append(" <li><a href='#"+ $(this).text() +"'>"+ $(this).text()+"</a></li>");
+        });
+
+        menuYloc = parseInt($(nameRight).css("top").substring(0,$(nameRight).css("top").indexOf("px")))
+
         $(window).scroll(function () {
             offset = menuYloc+$(document).scrollTop()+"px";
-            $(name).animate({top:offset},{duration:500,queue:false});
+            $(nameRight).animate({top:offset},{duration:500,queue:false});
+            $(nameLeft).animate({top:offset},{duration:500,queue:false});
         });
     });
 </script>

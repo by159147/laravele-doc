@@ -64,4 +64,10 @@ class DocController
         $apis = Api::with(['params'])->where('project_id',$id)->get();
         return view('doc::index',compact('apis','project'));
     }
+
+
+    public function nav()
+    {
+        return view('doc::doc');
+    }
 }
