@@ -79,6 +79,8 @@ class DocController
 
     public function nav()
     {
-        return view('doc::doc');
+        $config = Project::get();
+
+        return view('doc::nav',compact('config'));
     }
 }
