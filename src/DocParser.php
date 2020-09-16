@@ -87,7 +87,7 @@ class DocParser {
             $this->params[$param] = $arr;
 
         }else {
-            $this->params [$param] = $value + $this->params [$param];
+//            $this->params [$param] = $value + $this->params [$param];
         }
         return true;
     }

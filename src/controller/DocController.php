@@ -30,9 +30,9 @@ class DocController
                 $apis->map(function ($api) use ($group){
                    $apiModel = Api::create([
                         'group_id'=>$group->id,
-                        'name'=>$api['name'],
-                        'path'=>$api['path'],
-                        'method'=>$api['method'],
+                        'name'=>@$api['name'],
+                        'path'=>@$api['path'],
+                        'method'=>@$api['method'],
                     ]);
                     $this->setParams($apiModel->id,@$api['q']?:[],1);
                     $this->setParams($apiModel->id,@$api['u']?:[],2);
