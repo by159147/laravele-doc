@@ -2,6 +2,7 @@
 
 namespace Faed\Doc\commands;
 use Faed\Doc\DocParser;
+use Faed\Doc\models\Project;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
@@ -59,7 +60,7 @@ class ApiDoc extends Command
     protected $fun = ['index'=>'列表','store'=>'新建','show'=>'单条查看','update'=>'修改','destroy'=>'删除'];
 
 
-    protected $columns;
+    protected $columns = [];
     /**
      * Create a new route command instance.
      *
@@ -89,7 +90,8 @@ class ApiDoc extends Command
             'path'=>config('doc.path'),
             'v'=>config('doc.v'),
         ];
-        $this->columns = $this->getDatabaseColumns();
+        $this->lang();
+        $this->getDatabaseColumns();
         $httpData['apis'] =$this->getApis($routes);
         $this->http($httpData);
         $this->info('结束');
@@ -109,6 +111,13 @@ class ApiDoc extends Command
         }
 
     }
+
+    public function lang()
+    {
+        $lang = include(resource_path('lang/'.config('app.locale').'/validation.php'));
+        $this->columns = array_merge($lang['attributes'],$this->columns);
+    }
+
 
     public function getApis($routes)
     {
@@ -151,26 +160,19 @@ class ApiDoc extends Command
      */
     public function getDatabaseColumns() {
         $data = [];
-        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+        foreach (config('doc.mysql',['mysql']) as $coom){
+            $tables = DB::connection($coom)->getDoctrineSchemaManager()->listTableNames();
+            $prefix = DB::connection($coom)->getConfig('prefix');
 
-//        $connection = Schema::connection('mysql');
-//        foreach ($connection->getAllTables() as $v){
-//            $columns = DB::getDoctrineSchemaManager()->listTableDetails($v->Tables_in_doc);
-//            $column = $connection->getColumnListing($v->Tables_in_doc);
-//            foreach ($column as $item){
-//                $data[$item] = $columns->getColumn($item)->getComment();
-//            }
-//        }
-        $connection = Schema::connection('mysql');
-        foreach ($tables as $table){
-            $columns = DB::getDoctrineSchemaManager()->listTableDetails($table);
-            $column = $connection->getColumnListing($table);
-            foreach ($column as $item){
-                $data[$item] = $columns->getColumn($item)->getComment();
+            foreach ($tables as $table){
+                $columns = DB::getDoctrineSchemaManager()->listTableDetails($table);
+                $column = Schema::connection($coom)->getColumnListing(str_replace($prefix,'',$table));
+                foreach ($column as $item){
+                    $data[$item] = $columns->getColumn($item)->getComment();
+                }
             }
         }
-
-        return $data;
+        $this->columns = array_merge($this->columns,$data);
     }
 
     /**
@@ -185,11 +187,16 @@ class ApiDoc extends Command
                 $request = new $class();
                 if ($request instanceof FormRequest){
                     $rules = $request->rules();
+                    if (method_exists($request,'attributes')){
+                        $this->columns = array_merge($this->columns,$request->attributes());
+                    }
                     $data = [];
                     foreach ($rules as $key=>$vv){
+                        $explode = explode('.',$key);
+                        $explodeEnd = $explode[count($explode)-1];
                         $name = $key;
                         $is_must = array_search('required',$vv) === false?'N':'Y';
-                        $desc = @$this->columns[$key];
+                        $desc = @$this->columns[$explodeEnd];
                         $data[] = compact('name','is_must','desc');
                     }
                     return $data;

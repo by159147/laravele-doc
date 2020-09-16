@@ -16,4 +16,6 @@ return [
 
     //laravle版本
     'laravle_versions'=>8,
+
+    'mysql' => ['mysql'],
 ];
