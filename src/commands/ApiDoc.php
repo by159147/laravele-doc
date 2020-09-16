@@ -26,8 +26,8 @@ class ApiDoc extends Command
      * @var string
      */
     protected $signature = 'api:make
-                           {--M|mysql} : 生成数据库字段缓存
-                           {--C|clear} : 清理数据库缓存';
+                           {--M|mysql : 生成数据库字段缓存}
+                           {--C|clear : 清理数据库缓存}';
 
     /**
      * The console command description.
@@ -152,11 +152,13 @@ class ApiDoc extends Command
                 }
 
                 $apiDoc = $this->getDoc($api);
+
                 return [
                     'name'=>$this->getApiName(@$classDoc['group'],@$apiDoc['description'],$explode[1]),
                     'group'=>@$classDoc['group']?:'未分配',
                     'path'=>$route['uri'],
                     'method'=>$route['method'],
+                    'return'=>Cache::get($route['uri'],'{}'),
                     'q'=>$this->getParam(array_key_exists('q',$apiDoc)?$apiDoc['q']:[]),
                     'u'=>$this->getParam(array_key_exists('u',$apiDoc)?$apiDoc['u']:[]),
                     'b'=>array_merge($this->getParam(array_key_exists('b',$apiDoc)?$apiDoc['b']:[]),$this->getRequest($api)),
@@ -168,7 +170,8 @@ class ApiDoc extends Command
     }
 
     /**
-     * @return array
+     * @param bool $cache
+     * @return void
      */
     public function getDatabaseColumns($cache = false) {
         $data = [];

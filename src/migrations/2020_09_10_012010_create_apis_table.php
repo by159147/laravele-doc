@@ -20,6 +20,7 @@ class CreateApisTable extends Migration
             $table->string('path')->nullable()->comment('路由');
             $table->string('method')->nullable()->comment('请求方式');
             $table->string('desc')->nullable()->comment('描述');
+            $table->text('return')->nullable()->comment('返回');
             $table->timestamps();
         });
     }

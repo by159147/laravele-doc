@@ -73,6 +73,7 @@ class DocController
         $groups = Group::where('project_id',$project->id)->get();
         $groupId = $groupId?:Group::where('project_id',$project->id)->min('id');
         $apis = Api::with(['params'])->where('group_id',$groupId)->get();
+
         return view('doc::index',compact('apis','project','groups'));
     }
 
