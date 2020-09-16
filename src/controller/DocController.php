@@ -34,8 +34,8 @@ class DocController
                         'path'=>@$api['path'],
                         'method'=>@$api['method'],
                     ]);
-                    $this->setParams($apiModel->id,@$api['q']?:[],1);
-                    $this->setParams($apiModel->id,@$api['u']?:[],2);
+                    $this->setParams($apiModel->id,@$api['u']?:[],1);
+                    $this->setParams($apiModel->id,@$api['q']?:[],2);
                     $this->setParams($apiModel->id,@$api['b']?:[],3);
                 });
             });
