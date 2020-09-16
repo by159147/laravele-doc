@@ -10,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -24,14 +25,16 @@ class ApiDoc extends Command
      *
      * @var string
      */
-    protected $signature = 'api:make';
+    protected $signature = 'api:make
+                           {--M|mysql} : 生成数据库字段缓存
+                           {--C|clear} : 清理数据库缓存';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List all registered routes';
+    protected $description = '生成api文档';
 
     /**
      * The router instance.
@@ -81,7 +84,6 @@ class ApiDoc extends Command
      */
     public function handle()
     {
-
         $routes = $this->getRoutes();
 
         $httpData['project'] = [
@@ -90,8 +92,18 @@ class ApiDoc extends Command
             'path'=>config('doc.path'),
             'v'=>config('doc.v'),
         ];
+
+        if ($this->option('clear')){
+            Cache::set('columns',null);
+        }
+
+        if (Cache::get('columns')){
+            $this->columns = Cache::get('columns');
+        }else{
+            $this->getDatabaseColumns($this->option('mysql'));
+        }
+
         $this->lang();
-        $this->getDatabaseColumns();
         $httpData['apis'] =$this->getApis($routes);
         $this->http($httpData);
         $this->info('结束');
@@ -115,7 +127,7 @@ class ApiDoc extends Command
     public function lang()
     {
         $lang = include(resource_path('lang/'.config('app.locale').'/validation.php'));
-        $this->columns = array_merge($lang['attributes'],$this->columns);
+        $this->columns = array_merge($this->columns,$lang['attributes']);
     }
 
 
@@ -158,7 +170,7 @@ class ApiDoc extends Command
     /**
      * @return array
      */
-    public function getDatabaseColumns() {
+    public function getDatabaseColumns($cache = false) {
         $data = [];
         foreach (config('doc.mysql',['mysql']) as $coom){
             $tables = DB::connection($coom)->getDoctrineSchemaManager()->listTableNames();
@@ -171,6 +183,9 @@ class ApiDoc extends Command
                     $data[$item] = $columns->getColumn($item)->getComment();
                 }
             }
+        }
+        if ($cache){
+            Cache::set('columns',$data);
         }
         $this->columns = array_merge($this->columns,$data);
     }
