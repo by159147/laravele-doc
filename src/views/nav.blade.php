@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>余乐日志</title>
+    <title>余乐通文档</title>
     <link rel="stylesheet" href="{{asset('static/nav/css/style.css')}}">
 </head>
 <body>
 
 <header class="header">
-    <h1>余乐通日志</h1>
-    <p>余乐通内部日志</p>
+    <h1>余乐通文档</h1>
+    <p>余乐通内部文档</p>
 </header>
 <div class="wrapper">
     <div class="cols">
