@@ -86,28 +86,52 @@ class ApiDoc extends Command
     {
         $routes = $this->getRoutes();
 
-        $httpData['project'] = [
+
+        $this->clear($this->option('clear'));
+
+        $this->setColumnCache($this->option('mysql'));
+
+        $this->lang();
+        $httpData['apis'] =$this->getApis($routes);
+        $httpData['project'] = $this->getProject();
+        $this->http($httpData);
+        $this->info('结束');
+    }
+
+    /**
+     * 项目信息
+     * @return array
+     */
+    public function getProject()
+    {
+        return [
             'name'=>config('doc.name'),
             'app_name'=>config('doc.app_name'),
             'path'=>config('doc.path'),
             'v'=>config('doc.v'),
         ];
+    }
 
-        if ($this->option('clear')){
+    /**
+     * 清理缓存
+     * @param $clear
+     */
+    public function clear($clear)
+    {
+        if ($clear){
             Cache::set('columns',null);
         }
-
-        if (Cache::get('columns')){
-            $this->columns = Cache::get('columns');
-        }else{
-            $this->getDatabaseColumns($this->option('mysql'));
-        }
-
-        $this->lang();
-        $httpData['apis'] =$this->getApis($routes);
-        $this->http($httpData);
-        $this->info('结束');
     }
+
+    public function setColumnCache($option)
+    {
+        if (Cache::get('columns')){
+            $this->columns = array_merge($this->columns,Cache::get('columns'));
+        }else{
+            $this->getDatabaseColumns($option);
+        }
+    }
+
 
     public function http($httpData)
     {
@@ -124,6 +148,9 @@ class ApiDoc extends Command
 
     }
 
+    /**
+     * 读取validation.php attributes
+     */
     public function lang()
     {
         $lang = include(resource_path('lang/'.config('app.locale').'/validation.php'));
@@ -265,8 +292,7 @@ class ApiDoc extends Command
 
 
     /**
-     * Compile the routes into a displayable format.
-     *
+     * 获取路由
      * @return array
      */
     protected function getRoutes()
@@ -277,8 +303,7 @@ class ApiDoc extends Command
     }
 
     /**
-     * Get the route information for a given route.
-     *
+     * 路由详细信息
      * @param Route $route
      * @return array
      */
@@ -295,50 +320,6 @@ class ApiDoc extends Command
     }
 
     /**
-     * Sort the routes by a given element.
-     *
-     * @param  string  $sort
-     * @param  array  $routes
-     * @return array
-     */
-    protected function sortRoutes($sort, array $routes)
-    {
-        return Arr::sort($routes, function ($route) use ($sort) {
-            return $route[$sort];
-        });
-    }
-
-    /**
-     * Remove unnecessary columns from the routes.
-     *
-     * @param  array  $routes
-     * @return array
-     */
-    protected function pluckColumns(array $routes)
-    {
-        return array_map(function ($route) {
-            return Arr::only($route, $this->getColumns());
-        }, $routes);
-    }
-
-    /**
-     * Display the route information on the console.
-     *
-     * @param  array  $routes
-     * @return void
-     */
-    protected function displayRoutes(array $routes)
-    {
-        if ($this->option('json')) {
-            $this->line(json_encode(array_values($routes)));
-
-            return;
-        }
-
-        $this->table($this->getHeaders(), $routes);
-    }
-
-    /**
      * Get before filters.
      *
      * @param Route $route
@@ -351,91 +332,4 @@ class ApiDoc extends Command
         })->implode("\n");
     }
 
-    /**
-     * Filter the route by URI and / or name.
-     *
-     * @param  array  $route
-     * @return array|null
-     */
-    protected function filterRoute(array $route)
-    {
-
-        if (($this->option('name') && ! Str::contains($route['name'], $this->option('name'))) ||
-            $this->option('path') && ! Str::contains($route['uri'], $this->option('path')) ||
-            $this->option('method') && ! Str::contains($route['method'], strtoupper($this->option('method')))) {
-            return;
-        }
-
-        return $route;
-    }
-
-    /**
-     * Get the table headers for the visible columns.
-     *
-     * @return array
-     */
-    protected function getHeaders()
-    {
-        return Arr::only($this->headers, array_keys($this->getColumns()));
-    }
-
-    /**
-     * Get the column names to show (lowercase table headers).
-     *
-     * @return array
-     */
-    protected function getColumns()
-    {
-        $availableColumns = array_map('strtolower', $this->headers);
-
-        if ($this->option('compact')) {
-            return array_intersect($availableColumns, $this->compactColumns);
-        }
-
-        if ($columns = $this->option('columns')) {
-            return array_intersect($availableColumns, $this->parseColumns($columns));
-        }
-
-        return $availableColumns;
-    }
-
-    /**
-     * Parse the column list.
-     *
-     * @param  array  $columns
-     * @return array
-     */
-    protected function parseColumns(array $columns)
-    {
-        $results = [];
-
-        foreach ($columns as $i => $column) {
-            if (Str::contains($column, ',')) {
-                $results = array_merge($results, explode(',', $column));
-            } else {
-                $results[] = $column;
-            }
-        }
-
-        return array_map('strtolower', $results);
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['columns', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Columns to include in the route table'],
-            ['compact', 'c', InputOption::VALUE_NONE, 'Only show method, URI and action columns'],
-            ['json', null, InputOption::VALUE_NONE, 'Output the route list as JSON'],
-            ['method', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by method'],
-            ['name', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by name'],
-            ['path', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by path'],
-            ['reverse', 'r', InputOption::VALUE_NONE, 'Reverse the ordering of the routes'],
-            ['sort', null, InputOption::VALUE_OPTIONAL, 'The column (domain, method, uri, name, action, middleware) to sort by', 'uri'],
-        ];
-    }
 }
