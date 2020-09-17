@@ -1,4 +1,4 @@
-# laravele-doc安装
+# laravel-doc安装
 > - #### 写文档非常浪费后端同学的时间
 >
 > - #### 自动读取 request 的验证规则和方法注释作为请求参数
@@ -56,6 +56,23 @@
    ```
 # 文档编写
 
+类注释自动分组,控制器
+
+```php
+/**
+ * @group 接口
+ * @package App\Http\Controllers
+ */
+```
+
+```php
+/**
+ * 说明
+ * @q size Y 大小
+ * @u page N 分页
+ * @b body Y 参数
+ */
+```
 
 # 使用
 
