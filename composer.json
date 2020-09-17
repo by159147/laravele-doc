@@ -1,5 +1,5 @@
 {
-    "name": "faed/laravl-doc",
+    "name": "faed/laravel-doc",
     "description": "通过反射生成laravel接口文档",
     "license": "MIT",
     "minimum-stability": "dev",
