@@ -61,9 +61,9 @@
 
 1. http://xxxxx/doc 路由
 
-![](http://119.28.55.169/nav.png)
+![image](http://119.28.55.169/nav.png)
 
-![](http://119.28.55.169/doc.png)
+![image](http://119.28.55.169/doc.png)
 
 2. 提供中间件[ RecordReturn ]记录返回数据,请自行添加
 
@@ -75,7 +75,7 @@
       ];
    ```
 
-   ![](http://119.28.55.169/return.png)
+   ![image](http://119.28.55.169/return.png)
 
 3. 读取数据库时需要的时间可能较长提供参数选择
 
