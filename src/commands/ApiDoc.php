@@ -86,11 +86,8 @@ class ApiDoc extends Command
     {
         $routes = $this->getRoutes();
 
-
         $this->clear($this->option('clear'));
-
         $this->setColumnCache($this->option('mysql'));
-
         $this->lang();
         $httpData['apis'] =$this->getApis($routes);
         $httpData['project'] = $this->getProject();
