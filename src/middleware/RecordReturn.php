@@ -17,7 +17,7 @@ class RecordReturn
         $resource = $next($request);
         try {
             /**@var $resource JsonResponse **/
-            Cache::set($request->path(),$resource->getContent());
+            Cache::set($request->route()->uri(),$resource->getContent());
         }catch (Exception $exception){
             Log::error("保存返回缓存:".$exception->getMessage());
         }
