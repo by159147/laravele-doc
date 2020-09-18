@@ -13,8 +13,11 @@ class DocServiceProvider extends ServiceProvider
             $this->configPath() => config_path('doc.php'),
         ]);
 
-        //迁移文件
-        $this->loadMigrationsFrom(__DIR__.'/migrations');
+        if (config('doc.is_migration')){
+            //迁移文件
+            $this->loadMigrationsFrom(__DIR__.'/migrations');
+        }
+
 
         if ($this->app->runningInConsole()) {
             $this->commands([

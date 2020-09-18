@@ -18,4 +18,6 @@ return [
     'laravle_versions'=>8,
 
     'mysql' => ['mysql'],
+    //是否执行迁移
+    'is_migration'=>true,
 ];
