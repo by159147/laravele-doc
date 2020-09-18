@@ -60,7 +60,7 @@ class ApiDoc extends Command
     /**
      * @var string[]
      */
-    protected $fun = ['index'=>'列表 :value (详细)','store'=>'新建 :value','show'=>'单条查看 :value','update'=>'修改 :value','destroy'=>'删除 :value','lsit'=>'列表 :value (简短)'];
+    protected $fun = ['index'=>'列表 :value (详细)','store'=>'新建 :value','show'=>'单条查看 :value','update'=>'修改 :value','destroy'=>'删除 :value','list'=>'列表 :value (简短)'];
 
 
     protected $columns = [];
