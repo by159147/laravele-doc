@@ -60,7 +60,7 @@ class ApiDoc extends Command
     /**
      * @var string[]
      */
-    protected $fun = ['index'=>'列表','store'=>'新建','show'=>'单条查看','update'=>'修改','destroy'=>'删除'];
+    protected $fun = ['index'=>'列表 :value (详细)','store'=>'新建 :value','show'=>'单条查看 :value','update'=>'修改 :value','destroy'=>'删除 :value','lsit'=>'列表 :value (简短)'];
 
 
     protected $columns = [];
@@ -273,8 +273,9 @@ class ApiDoc extends Command
         if ($apiDescription){
             return $apiDescription;
         }
+        $this->fun = array_merge($this->fun,config('doc.fun',[]));
         if (array_key_exists($funName,$this->fun)){
-            return "{$classDescription}-{$this->fun[$funName]}";
+            return str_replace(':value',$classDescription,$this->fun[$funName]);
         }
         return null;
     }
