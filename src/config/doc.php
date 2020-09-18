@@ -18,6 +18,10 @@ return [
     'laravle_versions'=>8,
 
     'mysql' => ['mysql'],
+
     //是否执行迁移
     'is_migration'=>true,
+
+    //是否继续记录返回缓存
+    'is_cache'=>true,
 ];

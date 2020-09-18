@@ -15,11 +15,13 @@ class RecordReturn
     {
         /**@var $request Request **/
         $resource = $next($request);
-        try {
-            /**@var $resource JsonResponse **/
-            Cache::set($request->route()->uri(),$resource->getContent());
-        }catch (Exception $exception){
-            Log::error("保存返回缓存:".$exception->getMessage());
+        if (config('doc.is_cache')){
+            try {
+                /**@var $resource JsonResponse **/
+                Cache::set($request->route()->uri(),$resource->getContent());
+            }catch (Exception $exception){
+                Log::error("保存返回缓存:".$exception->getMessage());
+            }
         }
 
         return $resource;

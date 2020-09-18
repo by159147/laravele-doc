@@ -207,7 +207,10 @@ class ApiDoc extends Command
                 $columns = DB::getDoctrineSchemaManager()->listTableDetails($table);
                 $column = Schema::connection($coom)->getColumnListing(str_replace($prefix,'',$table));
                 foreach ($column as $item){
-                    $data[$item] = $columns->getColumn($item)->getComment();
+                    $comment = $columns->getColumn($item)->getComment();
+                    if ($comment){
+                        $data[$item] = $comment;
+                    }
                 }
             }
         }
