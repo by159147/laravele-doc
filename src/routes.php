@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 if (config('doc.laravle_versions') == 8){
     Route::post('/doc/save',[DocController::class,'save'])->name('doc.save');
-
     Route::get('/doc/{id}/{groupId?}',[DocController::class,'index'])->name('doc.index');
     Route::get('/doc',[DocController::class,'nav'])->name('doc.nav');
 }else{
