@@ -72,9 +72,10 @@ class DocController
     {
         $project = Project::find($id);
         $groups = Group::where('project_id',$project->id)->get();
-
         $apis = Api::with(['params'])->when($groupId,function ($query)use ($groupId){
             $query->where('group_id',$groupId);
+        },function ($query) use ($groups){
+            $query->whereIn('group_id',array_column($groups->toArray(),'id'));
         })->get();
 
         return view('doc::index',compact('apis','project','groups'));
